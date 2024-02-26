@@ -174,6 +174,7 @@ int main(int argc, char **argv){
   ros::Publisher pub_MPCy = nh.advertise<std_msgs::Float32MultiArray> ("MPCy",1000);
   ros::Publisher pub_NEXTx = nh.advertise<std_msgs::Float32MultiArray> ("NEXTx",1000);
   ros::Publisher pub_NEXTy = nh.advertise<std_msgs::Float32MultiArray> ("NEXTy",1000);
+  ros::Publisher pub_error_cost_info = nh.advertise<std_msgs::Float32MultiArray> ("error_cost",1000);
 
   ros::spinOnce();
   
@@ -309,7 +310,11 @@ int main(int argc, char **argv){
       //Display the MPC predicted trajectory 
       vector<double> mpc_x_vals;
       vector<double> mpc_y_vals;
-
+      //Arka-26-02-2024
+      vector<double> extra_info;
+      extra_info.push_back(cte);
+      extra_info.push_back(epsi);
+      extra_info.push_back(vars[vars.size() - 1]);
       //.. add (x,y) points to list here, points are in reference to the vehicle's coordinate system
       // the points in the simulator are connected by a Green line
 
@@ -353,6 +358,15 @@ int main(int argc, char **argv){
     std_msgs::Float32MultiArray msg_MPCy;
     std_msgs::Float32MultiArray msg_NEXTx;
     std_msgs::Float32MultiArray msg_NEXTy;
+    
+    //Arka 26-02-2024
+    std_msgs::Float32MultiArray msg_error_cost;
+    msg_error_cost.layout.dim.push_back(std_msgs::MultiArrayDimension());
+    msg_error_cost.layout.dim[0].size = extra_info.size();
+    msg_error_cost.layout.dim[0].stride = 1;
+    msg_error_cost.layout.dim[0].label = "cte-epsi-cost"; // or whatever name you typically use to index vec1
+    msg_error_cost.data.clear();
+    msg_error_cost.data.insert(msg_error_cost.data.end(), extra_info.begin(), extra_info.end());
 
     // create an empty vector and push all elements
 	  // set up dimensions
@@ -394,6 +408,7 @@ int main(int argc, char **argv){
     pub_MPCy.publish(msg_MPCy);
     pub_NEXTx.publish(msg_NEXTx);
     pub_NEXTy.publish(msg_NEXTy);
+    pub_error_cost_info.publish(msg_error_cost);
 
     //ROS_INFO_STREAM("Steering command: " << msg_steering_command.data);
     //ROS_INFO_STREAM("Throttle command: " << msg_throttle_command.data);
