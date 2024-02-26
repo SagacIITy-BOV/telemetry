@@ -1,1 +1,1 @@
-Publishes [cte, epsi, cost] in the topic /error_cost
+**Publishes [cte, epsi, cost] in the topic /error_cost
