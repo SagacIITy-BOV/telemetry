@@ -1,5 +1,5 @@
-# Udacity Self-Driving Car Engineer Nanodegree Program
-# *Model Predictive Controller Project*
+
+# *Model Predictive Controller for SagacIITy*
 
 ## Intro
 
