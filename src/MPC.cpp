@@ -267,6 +267,8 @@ vector<double> MPC::Solve(Eigen::VectorXd state, Eigen::VectorXd coeffs) {
     result.push_back(solution.x[x_start + i + 1]);
     result.push_back(solution.x[y_start + i + 1]);
   }
+  //Arka edit 26-02-2024
+  result.push_back(solution.obj_value);
 
   return result;
 }
